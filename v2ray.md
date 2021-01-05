@@ -16,6 +16,10 @@ v2ray是一个强大的科学上网工具，详细介绍和使用请参见[官�
 		#如果没有安装curl，先安装curl
 
 ## 手动离线安装
+
+
++ 2021/1/2补充：可以下载对应平台的zip包和go.sh放在同一文件夹下，执行`./go.sh --local ./v2ray.zip`
+
 当你需要在不能科学上网的vps或者linux上安装v2ray时，需要先去[github](https://github.com/v2ray/v2ray-core/releases)下载对应版本的压缩包，然后解压你会得到如下的文件
 ![](https://i.loli.net/2020/07/16/wTODncjhpdK96qF.jpg)
 
@@ -146,12 +150,12 @@ v2ary 不区分客户端和服务端，二者的不同主要体现在config.json
 ## 其他配置
 
 + 如果服务器没有开启端口，需要开启端口，下面以centos为例
-
-	firewalld-cmd --zone=public --add-port=XXXX/tcp --permanent
-	firewalld-cmd --zone=public --add-port=XXXX/udp --permanent
+~~~bash
+	firewall-cmd --zone=public --add-port=XXXX/tcp --permanent
+	firewall-cmd --zone=public --add-port=XXXX/udp --permanent
 	firewall-cmd --reload	//重启防火墙
 
-	
+~~~
 
 + proxychains4编译安装
 ProxyChains4 是linux平台的一个代理切换软件，主要用于命令行。

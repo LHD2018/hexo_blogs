@@ -43,30 +43,28 @@ systemctl restart nginx
 vim /etc/nginx/nginx.conf
 //在http前面加上
 rtmp {
- 
+
     server {
-         
+
         listen 8090;  #//服务端口 
-         
-        chunk_size 4096;   #//数据传输块的大小
- 
-        application vod{
-            play /home/videos;
-}
-        application live { 
+
+        chunk_size 4000;   #//数据传输块的大小
+
+
+        application live {
             live on;
-            hls on;
-            wait_key on;
-            hls_path /home/videos/hls;
-            hls_fragment 600s;
-            hls_playlist_length 10m;
-            hls_continuous on;
-            hls_cleanup on;
-            hls_nested on;
+            # record first 1K of stream
+            record all;
+            record_path /tmp/av;
+            record_max_size 1k;
+
+            # append current timestamp to each flv
+            record_unique on;
 
         }
     }
 }
+
 ~~~
 ~~~
 //域名绑定
@@ -79,31 +77,27 @@ server{
                 rtmp_stat all;
                 rtmp_stat_stylesheet stat.xsl;
         }
-    
+
         location /stat.xsl {
-                root /usr/local/nginx-rtmp-module/;
+                root /usr/share/nginx/modules/nginx-rtmp-module/;
         }
-    
+
         location / {
-                root /usr/share/nginx/video_live;
+                root /usr/share/nginx/htmls/video_live;
                 index index.html index.htm;
         }
-    
-        location /live {
-                types {
-                  application/vnd.apple.mpegurl m3u8;
-                  videos/mp2t ts;
-                }
-                alias /home/videos/hls;
-                expires -1;
-                add_header Cache-Control no-cache;
-                add_header Access-Control-Allow-Origin *;
-        }
-        error_page 500 502 503 504 /50x.html;
+
+    #access_log logs/access.log mylog;
+
+    error_page 404 /404.html;         #配置40x页面
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html; #配置50x页面
         location = /50x.html {
-                root html;
-        }
+    }
 }
+
 ~~~
 ~~~
 //网站根目录html文件
